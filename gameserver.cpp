@@ -21,7 +21,8 @@ void GameServer::readyRead()
 {
     QByteArray dane;
     dane = client->readAll();
-    int input = int(dane.at(0))-48;
+    int input = int(dane.at(0));
+    qDebug() << input;
     if (input>=0 && input<=8) {
         nowa_gra->wybranoPole(input);
     }
