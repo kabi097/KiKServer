@@ -13,6 +13,37 @@ class Gra : public QObject {
 public:  
     typedef enum
     {
+      POTWIERDZENIE,
+      WIAD_TEKST,
+      RUCH
+    } type_t;
+
+    struct wiadomosc
+    {
+      qint8 type;
+      qint8 len;
+      union
+      {
+        struct
+        {
+          qint8 rezultat;
+        } potw;
+
+        struct
+        {
+          char napis[80];
+        } wiadomosc;
+
+        struct
+        {
+          qint8 number;
+        } ruch;
+      } dane;
+    }  __attribute__ ((packed));
+
+
+    typedef enum
+    {
       G_KOLKO   = 0,
       G_KRZYZYK = 1
     } gracz_t;

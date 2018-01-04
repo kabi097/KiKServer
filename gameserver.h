@@ -4,6 +4,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QDebug>
+#include <QDataStream>
 #include "gra.h"
 
 class GameServer : public QObject
@@ -19,6 +20,7 @@ public slots:
     void readyRead();
 
 private:
+    int size;
     QTcpServer *serwer;
     QTcpSocket *client;
     Gra *nowa_gra;
