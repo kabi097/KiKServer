@@ -55,14 +55,20 @@ void GameServer::readyRead()
 //        }
 //    }
     QByteArray dane = client->readAll();
-    int input = int(dane.at(0));
-    qDebug() << input;
-    if (input>=0 && input<=8) {
-        nowa_gra->wybranoPole(input);
-    }
-    client->write(nowa_gra->pokazPlansze());
-    qDebug() << input;
+    //odczytałem dane.length();
+    const char *tmp = dane.constData();
 
+    struct Gra::wiadomosc *wiad = (struct Gra::wiadomosc *) tmp; //dane.constData();
+
+    qDebug()<<"Typ wiadomości = " << wiad->type<<"\n";
+
+//    int input = int(dane.at(0))-1;
+//    qDebug() << input;
+//    if (input>=0 && input<=8) {
+//        nowa_gra->wybranoPole(input);
+//    }
+//    client->write(nowa_gra->pokazPlansze());
+//    qDebug() << input;
 }
 
 GameServer::~GameServer()
