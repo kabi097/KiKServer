@@ -23,10 +23,12 @@ void GameServer::readyRead()
 {
     QByteArray dane = client->read(120);
     //odczytałem dane.length();
-    qDebug() << dane;
     const char *tmp = dane.constData();
 
     struct Gra::wiadomosc *wiad = (struct Gra::wiadomosc *) tmp; //dane.constData();
+
+    char bajty[120];
+    struct Gra::wiadomosc *send = (struct Gra::wiadomosc *) bajty;
 
     switch (wiad->type) {
     case Gra::POTWIERDZENIE:
@@ -34,10 +36,25 @@ void GameServer::readyRead()
         break;
     case Gra::WIAD_TEKST:
         qDebug() << wiad->dane.czat.napis;
+        strcpy(send->dane.czat.napis,"No siema");
+        send->type = Gra::WIAD_TEKST;
+        send->length = sizeof(bajty);
+        client->write(bajty, send->length);
         break;
     case Gra::RUCH:
-        qDebug() << wiad->dane.ruch.x;
-        qDebug() << wiad->dane.ruch.y;
+        nowa_gra->wybranoPole(3*wiad->dane.ruch.x+wiad->dane.ruch.y);
+        send->type = Gra::PLANSZA;
+        send->dane.mojaMapa.plansza = nowa_gra->pokazPlansze();
+        send->length = sizeof(bajty);
+        client->write(bajty, send->length);
+        if (nowa_gra->rezultat_gry() != Gra::REMIS) {
+            send->type = Gra::POTWIERDZENIE;
+            send->dane.potwierdzenie.rezultat = (uint8_t)nowa_gra->rezultat_gry();
+            send->length = sizeof(bajty);
+            client->write(bajty, send->length);
+        }
+        qDebug() << "X: " << wiad->dane.ruch.x;
+        qDebug() << "Y: " << wiad->dane.ruch.y;
         break;
     case Gra::PODDAJ:
         qDebug() << "Poddałem sie";

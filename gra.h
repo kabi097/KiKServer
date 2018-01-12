@@ -16,8 +16,13 @@ public:
         POTWIERDZENIE,
         WIAD_TEKST,
         RUCH,
-        PODDAJ
+        PODDAJ,
+        PLANSZA
     } type_t;
+
+    typedef struct {
+        Pole::ruch_t ruchy[9];
+    } plansza_t;
 
     struct wiadomosc
     {
@@ -46,10 +51,12 @@ public:
                 uint8_t x;
                 uint8_t y;
             } ruch;
+
+            struct {
+                plansza_t plansza;
+            } mojaMapa;
         } dane;
     }  __attribute__ ((packed));
-
-
     typedef enum
     {
       G_KOLKO   = 0,
@@ -70,7 +77,7 @@ public:
     //int ocen_rezultat();
     void zmien_gracza();
     void czysc_plansze();
-    QByteArray pokazPlansze();
+    plansza_t pokazPlansze();
 
     int nrPola;
 

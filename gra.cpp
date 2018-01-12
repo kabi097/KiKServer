@@ -78,16 +78,13 @@ void Gra::czysc_plansze()
     }
 }
 
-QByteArray Gra::pokazPlansze()
+Gra::plansza_t Gra::pokazPlansze()
 {
-    QByteArray plansza;
+    plansza_t mojaPlansza;
     for (int i=0; i<9; i++) {
-        if (pole[i]->aktualna_wartosc == Pole::BRAK) plansza.append('0');
-        if (pole[i]->aktualna_wartosc == Pole::KOLKO) plansza.append('1');
-        if (pole[i]->aktualna_wartosc == Pole::KRZYZYK) plansza.append('2');
+        mojaPlansza.ruchy[i] = pole[i]->aktualna_wartosc;
     }
-    plansza.append('\0');
-    return plansza;
+    return mojaPlansza;
 }
 
 Gra::~Gra()
