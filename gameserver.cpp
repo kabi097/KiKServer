@@ -21,12 +21,10 @@ void GameServer::acceptConnection()
 
 void GameServer::readyRead()
 {
-    QByteArray dane = client->read(120);
+    QByteArray dane = client->readAll();
     //odczytałem dane.length();
     const char *tmp = dane.constData();
-
     struct Gra::wiadomosc *wiad = (struct Gra::wiadomosc *) tmp; //dane.constData();
-
     char bajty[120];
     struct Gra::wiadomosc *send = (struct Gra::wiadomosc *) bajty;
 
@@ -43,18 +41,19 @@ void GameServer::readyRead()
         break;
     case Gra::RUCH:
         nowa_gra->wybranoPole(3*wiad->dane.ruch.x+wiad->dane.ruch.y);
-        send->type = Gra::PLANSZA;
-        send->dane.mojaMapa.plansza = nowa_gra->pokazPlansze();
-        send->length = sizeof(bajty);
-        client->write(bajty, send->length);
-        if (nowa_gra->rezultat_gry() != Gra::REMIS) {
-            send->type = Gra::POTWIERDZENIE;
-            send->dane.potwierdzenie.rezultat = (uint8_t)nowa_gra->rezultat_gry();
+        if (nowa_gra->rezultat_gry() == Gra::NIEROZSTRZYGNIETA) {
+            send->type = Gra::PLANSZA;
+            send->dane.mojaMapa.plansza = nowa_gra->pokazPlansze();
             send->length = sizeof(bajty);
-            client->write(bajty, send->length);
+        } else {
+            send->type = Gra::POTWIERDZENIE;
+            send->dane.potwierdzenie.rezultat = nowa_gra->rezultat_gry();
+            qDebug() << nowa_gra->rezultat_gry();
+            send->length = sizeof(bajty);
+            nowa_gra->czysc_plansze();
         }
-        qDebug() << "X: " << wiad->dane.ruch.x;
-        qDebug() << "Y: " << wiad->dane.ruch.y;
+        client->write(bajty, send->length);
+        qDebug() << "X:" << wiad->dane.ruch.x << " Y:" << wiad->dane.ruch.y;
         break;
     case Gra::PODDAJ:
         qDebug() << "Poddałem sie";
@@ -64,14 +63,6 @@ void GameServer::readyRead()
         qDebug() << "Nie można odczytać";
         break;
     }
-
-//    int input = int(dane.at(0))-1;
-//    qDebug() << input;
-//    if (input>=0 && input<=8) {
-//        nowa_gra->wybranoPole(input);
-//    }
-//    client->write(nowa_gra->pokazPlansze());
-//    qDebug() << input;
 }
 
 GameServer::~GameServer()

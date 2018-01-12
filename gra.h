@@ -38,7 +38,7 @@ public:
 
             struct
             {
-                uint8_t rezultat;
+                int rezultat;
             } potwierdzenie;
 
             struct
@@ -57,6 +57,7 @@ public:
             } mojaMapa;
         } dane;
     }  __attribute__ ((packed));
+
     typedef enum
     {
       G_KOLKO   = 0,
@@ -73,7 +74,7 @@ public:
 
     explicit Gra(QObject *parent = nullptr);
 
-    rezultat_t rezultat_gry();
+    int rezultat_gry();
     //int ocen_rezultat();
     void zmien_gracza();
     void czysc_plansze();

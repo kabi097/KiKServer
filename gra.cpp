@@ -14,7 +14,7 @@ Gra::Gra(QObject *parent) : QObject(parent)
     aktualny_gracz = G_KOLKO;
 }
 
-Gra::rezultat_t Gra::rezultat_gry()
+int Gra::rezultat_gry()
 {
     //Sprawdzanie wierszy
     for (int y=0; y<3; y++)
@@ -106,7 +106,7 @@ void Gra::wybranoPole(int i)
             } else {
                 //okno.setInformativeText("REMIS");
             }
-            czysc_plansze();
+            //czysc_plansze();
         } else {
             zmien_gracza();
         }
